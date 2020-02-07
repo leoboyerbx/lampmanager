@@ -1,0 +1,30 @@
+#!/bin/bash
+
+function endWord() {
+	case "$1" in
+	 "start") echo "started" ;;
+	 "restart") echo "restarted" ;;
+	 "stop") echo "stopped" ;;
+	 *) echo "" ;;
+	esac
+}
+function ucfirst() {
+	echo "${1^}"
+}
+
+service=$1
+case "$2" in
+ "") action="start" ;;
+ *) action=$2 ;;
+esac
+
+
+if [ -z $service ] || [ $service = "all" ]
+then
+        su -c "sudo service apache2 $action && sudo service mariadb $action" lampmanager && notify-send "LAMP Manager" "All services $(endWord $action)" -i /usr/share/icons/Zorin/48x48/places/server.png
+else
+	su -c "sudo service $service $action" lampmanager && notify-send "LAMP Manager" "$(ucfirst $service) service $(endWord $action)" -i /usr/share/icons/Zorin/48x48/places/server.png
+fi
+
+#su -c "sudo service apache2 start && sudo service mariadb start" lampmanager && notify-send "LAMP Manager" "All services started" -i /usr/share/icons/Zorin/48x48/places/server.png
+
