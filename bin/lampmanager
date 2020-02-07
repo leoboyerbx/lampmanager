@@ -8,6 +8,11 @@ function endWord() {
 	 *) echo "" ;;
 	esac
 }
+
+function status() {
+	
+}
+
 function ucfirst() {
 	echo "${1^}"
 }

@@ -1,12 +1,14 @@
 #!/usr/bin/python
 import os
 import gi
+from pathlib import Path
 gi.require_version('AppIndicator3', '0.1')
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk as gtk, AppIndicator3 as appindicator
 
 
 _dir_path = os.path.dirname(os.path.realpath(__file__))
+_root = Path(_dir_path).parent
 
 class Indicator(object):    
     def __init__(self, menu):
@@ -26,12 +28,16 @@ class Indicator(object):
         else:
             self.ind.set_status (appindicator.IndicatorStatus.ACTIVE)
     def setState(self, state):
-        if (state == 'running'):
-            self.ind.set_icon(os.path.join(_dir_path, 'img', 'all-started.png'))
-        elif (state == 'partial'):
-            self.ind.set_icon(os.path.join(_dir_path, 'img', 'one-started.png'))
-        else:
-            self.ind.set_icon(os.path.join(_dir_path, 'img', 'all-stopped.png'))
+        switch (state):
+            case 2:
+                self.ind.set_icon(os.path.join(_dir_path, 'img', 'all-started.png'))
+                break
+            case 1:
+                self.ind.set_icon(os.path.join(_dir_path, 'img', 'one-started.png'))
+                break
+            case 0:
+            default:
+                self.ind.set_icon(os.path.join(_dir_path, 'img', 'all-stopped.png'))
 
 
 def menu():
@@ -55,8 +61,8 @@ def main():
 
 
 def note(_):
-    global tray
-    tray.setState('running')
+    print(os.popen(str(_root) + '/bin/lampmanager').read())
+    
 def quit(_):
     gtk.main_quit()
 if __name__ == "__main__":
