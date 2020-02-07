@@ -10,6 +10,24 @@ function endWord() {
 }
 
 function status() {
+	systemctl is-active --quiet apache2
+	statusApache=$?
+	
+	systemctl is-active --quiet mysql
+	statusMysql=$?
+
+	status=0
+
+	if [ $statusApache = 0 ]
+	then
+		((status++))
+	fi
+	if [ $statusMysql = 0 ]
+	then
+		((status++))
+	fi
+
+	echo $status
 	
 }
 
@@ -26,10 +44,11 @@ esac
 
 if [ -z $service ] || [ $service = "all" ]
 then
-        su -c "sudo service apache2 $action && sudo service mariadb $action" lampmanager && notify-send "LAMP Manager" "All services $(endWord $action)" -i /usr/share/icons/Zorin/48x48/places/server.png
+        su -c "sudo service apache2 $action && sudo service mysql $action" lampmanager && notify-send "LAMP Manager" "All services $(endWord $action)" -i /usr/share/icons/Zorin/48x48/places/server.png
 else
 	su -c "sudo service $service $action" lampmanager && notify-send "LAMP Manager" "$(ucfirst $service) service $(endWord $action)" -i /usr/share/icons/Zorin/48x48/places/server.png
 fi
 
 #su -c "sudo service apache2 start && sudo service mariadb start" lampmanager && notify-send "LAMP Manager" "All services started" -i /usr/share/icons/Zorin/48x48/places/server.png
 
+status

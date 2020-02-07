@@ -28,24 +28,29 @@ class Indicator(object):
         else:
             self.ind.set_status (appindicator.IndicatorStatus.ACTIVE)
     def setState(self, state):
-        switch (state):
-            case 2:
-                self.ind.set_icon(os.path.join(_dir_path, 'img', 'all-started.png'))
-                break
-            case 1:
-                self.ind.set_icon(os.path.join(_dir_path, 'img', 'one-started.png'))
-                break
-            case 0:
-            default:
-                self.ind.set_icon(os.path.join(_dir_path, 'img', 'all-stopped.png'))
+        if (state == 2):
+            self.ind.set_icon(os.path.join(_dir_path, 'img', 'all-started.png'))
+        elif (state == 1):
+            self.ind.set_icon(os.path.join(_dir_path, 'img', 'one-started.png'))
+        elif (state == 0): {
+            self.ind.set_icon(os.path.join(_dir_path, 'img', 'all-stopped.png'))
+
+}
+
 
 
 def menu():
     menu = gtk.Menu()
+
+    apacheitem = gtk.ImageMenuItem.new_with_label('Apache2')
+    apacheitem.set_image(gtk.Image.new_from_file(os.path.join(_root, '/img/apache.png')))
+    apacheitem.set_submenu(apacheMenu())
+    apacheitem.set_always_show_image(True)
+    menu.append(apacheitem)
+
+    sep = gtk.SeparatorMenuItem()
+    menu.append(sep)
     
-    command_one = gtk.MenuItem('My Notes')
-    command_one.connect('activate', note)
-    menu.append(command_one)
     exittray = gtk.MenuItem('Exit Tray')
     exittray.connect('activate', quit)
     menu.append(exittray)
@@ -53,6 +58,15 @@ def menu():
     menu.show_all()
     return menu
 
+def apacheMenu():
+    apacheMenu = gtk.Menu()
+
+    command_apache_start = gtk.ImageMenuItem(gtk.STOCK_OPEN)
+    command_apache_start.set_always_show_image(True)
+    command_apache_start.connect('activate', apache_start)
+    apacheMenu.append(command_apache_start)
+
+    return apacheMenu
 
 def main():
     global tray
@@ -60,8 +74,12 @@ def main():
     gtk.main()
 
 
-def note(_):
-    print(os.popen(str(_root) + '/bin/lampmanager').read())
+def apache_start(_):
+    global tray
+    tray.setState(0)
+    res = os.popen(str(_root) + '/bin/lampmanager apache2 start').read()
+    print(res)
+    tray.setState(int(res))
     
 def quit(_):
     gtk.main_quit()
