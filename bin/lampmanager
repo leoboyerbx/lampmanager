@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 function endWord() {
 	case "$1" in
@@ -45,12 +45,10 @@ if [ $service != "getstate" ]
 then
 	if [ -z $service ] || [ $service = "all" ]
 	then
-			su -c "sudo service apache2 $action && sudo service mysql $action" lampmanager && notify-send "LAMP Manager" "All services $(endWord $action)" -i /usr/share/icons/Zorin/48x48/places/server.png
+			sudo service apache2 $action && sudo service mysql $action && notify-send "LAMP Manager" "All services $(endWord $action)" -i /usr/share/icons/Zorin/48x48/places/server.png
 	else
-		su -c "sudo service $service $action" lampmanager && notify-send "LAMP Manager" "$(ucfirst $service) service $(endWord $action)" -i /usr/share/icons/Zorin/48x48/places/server.png
+		sudo service $service $action && notify-send "LAMP Manager" "$(ucfirst $service) service $(endWord $action)" -i /usr/share/icons/Zorin/48x48/places/server.png
 	fi
 fi
-
-#su -c "sudo service apache2 start && sudo service mariadb start" lampmanager && notify-send "LAMP Manager" "All services started" -i /usr/share/icons/Zorin/48x48/places/server.png
 
 status

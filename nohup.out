@@ -4,3 +4,23 @@
 su : doit être lancé à partir d'un terminal
 b'1\n'
 b'1\n'
+/home/leo/dev/lampmanager/bin/lampmanager: 3: /home/leo/dev/lampmanager/bin/lampmanager: Syntax error: "(" unexpected
+Traceback (most recent call last):
+  File "py/tray.py", line 135, in <module>
+    main()
+  File "py/tray.py", line 117, in main
+    lampManager('getstate', '')
+  File "py/tray.py", line 128, in lampManager
+    res = subprocess.check_output([cmd], shell=True)
+  File "/usr/lib/python3.6/subprocess.py", line 356, in check_output
+    **kwargs).stdout
+  File "/usr/lib/python3.6/subprocess.py", line 438, in run
+    output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['/home/leo/dev/lampmanager/bin/lampmanager getstate ']' returned non-zero exit status 2.
+Traceback (most recent call last):
+  File "py/tray.py", line 65, in <lambda>
+    startAll.connect('activate', lambda _: lampManager('all', 'restart'))
+KeyboardInterrupt
+b'1\n'
+b'0\n'
+b'2\n'

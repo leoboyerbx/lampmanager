@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 if [ "$(id -u)" -ne 0 ]; then
         echo 'This script must be run with sudo'
@@ -10,7 +10,6 @@ user=$SUDO_USER
 
 echo "========== WARNING =========="
 echo "This setup script is going to allow the current user ($user) to run some commands with root privileges without having to provide his password."
-echo ""
 echo "This is for development purposes only and SHOULD NOT be done in a production environnement."
 echo ""
 echo ""
@@ -27,6 +26,8 @@ while true; do
     esac
 done
 
-echo "fone"
-# echo 'lampmanager ALL=(ALL) NOPASSWD: /usr/sbin/service apache2 *, /usr/sbin/service apache2 *' >> /etc/sudoers
+echo "$user ALL=(ALL) NOPASSWD: /usr/sbin/service apache2 *, /usr/sbin/service mysql *" >> /etc/sudoers
+
+echo ""
+echo "Changes were made successfully."
 
