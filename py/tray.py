@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import os
+import subprocess
 import gi
 from pathlib import Path
 gi.require_version('AppIndicator3', '0.1')
@@ -120,7 +121,12 @@ def main():
 def lampManager(service, action):
     global tray
     tray.setState(0)
-    res = os.popen(str(_root) + "/bin/lampmanager {} {}".format(service, action)).read()
+    # os.system('bash ' + str(_root) + "/bin/lampmanager {} {}".format(service, action))
+    # res = os.popen(str(_root) + "/bin/lampmanager {} {}".format(service, action)).read()
+    # res = subprocess.check_output([str(_root) + "/bin/lampmanager", service, action], shell=True)
+    cmd = str(_root) + "/bin/lampmanager {} {}".format(service, action)
+    res = subprocess.check_output([cmd], shell=True)
+    print(res)
     tray.setState(int(res))
     
 def quit(_):

@@ -1,0 +1,6 @@
+
+/home/leo/dev/lampmanager/bin/lampmanager: ligne 45 : [: != : opérateur unaire attendu
+/home/leo/dev/lampmanager/bin/lampmanager: ligne 45 : [: != : opérateur unaire attendu
+su : doit être lancé à partir d'un terminal
+b'1\n'
+b'1\n'
