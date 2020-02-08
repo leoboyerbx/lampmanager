@@ -41,12 +41,14 @@ case "$2" in
  *) action=$2 ;;
 esac
 
-
-if [ -z $service ] || [ $service = "all" ]
+if [ $service != "getstate" ]
 then
-        su -c "sudo service apache2 $action && sudo service mysql $action" lampmanager && notify-send "LAMP Manager" "All services $(endWord $action)" -i /usr/share/icons/Zorin/48x48/places/server.png
-else
-	su -c "sudo service $service $action" lampmanager && notify-send "LAMP Manager" "$(ucfirst $service) service $(endWord $action)" -i /usr/share/icons/Zorin/48x48/places/server.png
+	if [ -z $service ] || [ $service = "all" ]
+	then
+			su -c "sudo service apache2 $action && sudo service mysql $action" lampmanager && notify-send "LAMP Manager" "All services $(endWord $action)" -i /usr/share/icons/Zorin/48x48/places/server.png
+	else
+		su -c "sudo service $service $action" lampmanager && notify-send "LAMP Manager" "$(ucfirst $service) service $(endWord $action)" -i /usr/share/icons/Zorin/48x48/places/server.png
+	fi
 fi
 
 #su -c "sudo service apache2 start && sudo service mariadb start" lampmanager && notify-send "LAMP Manager" "All services started" -i /usr/share/icons/Zorin/48x48/places/server.png

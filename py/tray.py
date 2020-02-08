@@ -11,7 +11,7 @@ _dir_path = os.path.dirname(os.path.realpath(__file__))
 _root = Path(_dir_path).parent
 
 class Indicator(object):    
-    def __init__(self, menu):
+    def __init__(self, menu, trayText):
 
         self.ind = appindicator.Indicator.new (
                           "thetool",
@@ -21,6 +21,7 @@ class Indicator(object):
         self.ind.set_icon(os.path.join(_dir_path, 'img', 'all-stopped.png'))
         # self.ind.set_attention_icon (os.path.join(_curr_dir, 'img', 'tools-active.png'))
         self.ind.set_menu(menu)
+        self.trayText = trayText
 
     def set_attention(self, attention):
         if attention:
@@ -30,21 +31,31 @@ class Indicator(object):
     def setState(self, state):
         if (state == 2):
             self.ind.set_icon(os.path.join(_dir_path, 'img', 'all-started.png'))
+            self.trayText.set_label('All services Running')
         elif (state == 1):
             self.ind.set_icon(os.path.join(_dir_path, 'img', 'one-started.png'))
-        elif (state == 0): {
+            self.trayText.set_label('Some Services Running')
+        elif (state == 0): 
             self.ind.set_icon(os.path.join(_dir_path, 'img', 'all-stopped.png'))
+            self.trayText.set_label('All Services Stopped')
 
-}
 
 
 
 def menu():
     menu = gtk.Menu()
 
+    statusItem = gtk.MenuItem("")
+    statusItem.set_sensitive(False)
+    menu.append(statusItem)
+
+    startAll = gtk.MenuItem("(Re)start All Services")
+    startAll.connect('activate', lambda _: lampManager('all', 'restart'))
+    menu.append(startAll)
+
     apacheitem = gtk.ImageMenuItem.new_with_label('Apache2')
     apacheitem.set_image(gtk.Image.new_from_file(os.path.join(_root, '/img/apache.png')))
-    apacheitem.set_submenu(apacheMenu())
+    apacheitem.set_submenu(serviceMenu('apache', ['start', 'stop', 'restart']))
     apacheitem.set_always_show_image(True)
     menu.append(apacheitem)
 
@@ -56,29 +67,29 @@ def menu():
     menu.append(exittray)
     
     menu.show_all()
-    return menu
+    return [menu, statusItem]
 
-def apacheMenu():
-    apacheMenu = gtk.Menu()
+def serviceMenu(service, actions):
+    serviceMenu = gtk.Menu()
 
-    command_apache_start = gtk.ImageMenuItem(gtk.STOCK_OPEN)
-    command_apache_start.set_always_show_image(True)
-    command_apache_start.connect('activate', apache_start)
-    apacheMenu.append(command_apache_start)
+    for action in actions:
+        command = gtk.MenuItem(action.capitalize())
+        command.connect('activate', lambda _: lampManager(service, action))
+        serviceMenu.append(command)
 
-    return apacheMenu
+    return serviceMenu
 
 def main():
     global tray
-    tray = Indicator(menu())
+    tray = Indicator(*menu())
+    lampManager('getstate', '')
     gtk.main()
 
 
-def apache_start(_):
+def lampManager(service, action):
     global tray
     tray.setState(0)
-    res = os.popen(str(_root) + '/bin/lampmanager apache2 start').read()
-    print(res)
+    res = os.popen(str(_root) + "/bin/lampmanager {} {}".format(service, action)).read()
     tray.setState(int(res))
     
 def quit(_):
