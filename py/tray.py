@@ -11,7 +11,7 @@ _dir_path = os.path.dirname(os.path.realpath(__file__))
 _root = Path(_dir_path).parent
 
 class Indicator(object):    
-    def __init__(self, menu, trayText):
+    def __init__(self, menu, trayText, startAll, stopAll):
 
         self.ind = appindicator.Indicator.new (
                           "thetool",
@@ -22,6 +22,8 @@ class Indicator(object):
         # self.ind.set_attention_icon (os.path.join(_curr_dir, 'img', 'tools-active.png'))
         self.ind.set_menu(menu)
         self.trayText = trayText
+        self.startAll = startAll
+        self.stopAll = stopAll
 
     def set_attention(self, attention):
         if attention:
@@ -32,12 +34,18 @@ class Indicator(object):
         if (state == 2):
             self.ind.set_icon(os.path.join(_dir_path, 'img', 'all-started.png'))
             self.trayText.set_label('All services Running')
+            self.startAll.set_label('Restart All')
+            self.stopAll.set_sensitive(True)
         elif (state == 1):
             self.ind.set_icon(os.path.join(_dir_path, 'img', 'one-started.png'))
             self.trayText.set_label('Some Services Running')
+            self.startAll.set_label('Restart All')
+            self.stopAll.set_sensitive(True)
         elif (state == 0): 
             self.ind.set_icon(os.path.join(_dir_path, 'img', 'all-stopped.png'))
             self.trayText.set_label('All Services Stopped')
+            self.startAll.set_label('Start All')
+            self.stopAll.set_sensitive(False)
 
 
 
@@ -83,7 +91,7 @@ def menu():
     menu.append(exittray)
     
     menu.show_all()
-    return [menu, statusItem]
+    return [menu, statusItem, startAll, stopAll]
 
 def serviceMenu(service):
     serviceMenu = gtk.Menu()
