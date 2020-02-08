@@ -49,15 +49,31 @@ def menu():
     statusItem.set_sensitive(False)
     menu.append(statusItem)
 
+    sep = gtk.SeparatorMenuItem()
+    menu.append(sep)
+
     startAll = gtk.MenuItem("(Re)start All Services")
     startAll.connect('activate', lambda _: lampManager('all', 'restart'))
     menu.append(startAll)
 
-    apacheitem = gtk.ImageMenuItem.new_with_label('Apache2')
-    apacheitem.set_image(gtk.Image.new_from_file(os.path.join(_root, '/img/apache.png')))
-    apacheitem.set_submenu(serviceMenu('apache', ['start', 'stop', 'restart']))
-    apacheitem.set_always_show_image(True)
-    menu.append(apacheitem)
+    stopAll = gtk.MenuItem("(Re)start All Services")
+    stopAll.connect('activate', lambda _: lampManager('all', 'stop'))
+    menu.append(stopAll)
+
+    sep = gtk.SeparatorMenuItem()
+    menu.append(sep)
+
+    apacheitem1 = gtk.ImageMenuItem.new_with_label('Apache2')
+    apacheitem1.set_image(gtk.Image.new_from_file(os.path.join(_root, '/img/apache.png')))
+    apacheitem1.set_submenu(serviceMenu('apache2', ['start', 'stop', 'restart']))
+    apacheitem1.set_always_show_image(True)
+    menu.append(apacheitem1)
+
+    mysqlItem = gtk.ImageMenuItem.new_with_label('MySQL')
+    mysqlItem.set_image(gtk.Image.new_from_file(os.path.join(_root, '/img/mysql.png')))
+    mysqlItem.set_submenu(serviceMenu('mysql', ['start', 'stop', 'restart']))
+    mysqlItem.set_always_show_image(True)
+    menu.append(mysqlItem)
 
     sep = gtk.SeparatorMenuItem()
     menu.append(sep)
