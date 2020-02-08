@@ -56,7 +56,7 @@ def menu():
     startAll.connect('activate', lambda _: lampManager('all', 'restart'))
     menu.append(startAll)
 
-    stopAll = gtk.MenuItem("(Re)start All Services")
+    stopAll = gtk.MenuItem("Stop All Services")
     stopAll.connect('activate', lambda _: lampManager('all', 'stop'))
     menu.append(stopAll)
 
@@ -65,13 +65,13 @@ def menu():
 
     apacheitem1 = gtk.ImageMenuItem.new_with_label('Apache2')
     apacheitem1.set_image(gtk.Image.new_from_file(os.path.join(_root, '/img/apache.png')))
-    apacheitem1.set_submenu(serviceMenu('apache2', ['start', 'stop', 'restart']))
+    apacheitem1.set_submenu(serviceMenu('apache2'))
     apacheitem1.set_always_show_image(True)
     menu.append(apacheitem1)
 
     mysqlItem = gtk.ImageMenuItem.new_with_label('MySQL')
     mysqlItem.set_image(gtk.Image.new_from_file(os.path.join(_root, '/img/mysql.png')))
-    mysqlItem.set_submenu(serviceMenu('mysql', ['start', 'stop', 'restart']))
+    mysqlItem.set_submenu(serviceMenu('mysql'))
     mysqlItem.set_always_show_image(True)
     menu.append(mysqlItem)
 
@@ -85,13 +85,20 @@ def menu():
     menu.show_all()
     return [menu, statusItem]
 
-def serviceMenu(service, actions):
+def serviceMenu(service):
     serviceMenu = gtk.Menu()
 
-    for action in actions:
-        command = gtk.MenuItem(action.capitalize())
-        command.connect('activate', lambda _: lampManager(service, action))
-        serviceMenu.append(command)
+    command1 = gtk.MenuItem('Start')
+    command1.connect('activate', lambda _: lampManager(service, 'start'))
+    serviceMenu.append(command1)
+
+    command2 = gtk.MenuItem('Stop')
+    command2.connect('activate', lambda _: lampManager(service, 'stop'))
+    serviceMenu.append(command2)
+
+    command3 = gtk.MenuItem('Restart')
+    command3.connect('activate', lambda _: lampManager(service, 'restart'))
+    serviceMenu.append(command3)
 
     return serviceMenu
 
