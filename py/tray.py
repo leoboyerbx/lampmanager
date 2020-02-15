@@ -3,24 +3,25 @@ import os
 import subprocess
 import gi
 from pathlib import Path
+
 gi.require_version('AppIndicator3', '0.1')
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk as gtk, AppIndicator3 as appindicator
 
 import vhost_manager
 
-
 _dir_path = os.path.dirname(os.path.realpath(__file__))
 _root = Path(_dir_path).parent
 
-class Indicator(object):    
+
+class Indicator(object):
     def __init__(self, menu, trayText, startAll, stopAll):
 
-        self.ind = appindicator.Indicator.new (
-                          "thetool",
-                          "",
-                          appindicator.IndicatorCategory.APPLICATION_STATUS)
-        self.ind.set_status (appindicator.IndicatorStatus.ACTIVE)
+        self.ind = appindicator.Indicator.new(
+            "thetool",
+            "",
+            appindicator.IndicatorCategory.APPLICATION_STATUS)
+        self.ind.set_status(appindicator.IndicatorStatus.ACTIVE)
         self.ind.set_icon(os.path.join(_dir_path, 'img', 'all-stopped.png'))
         # self.ind.set_attention_icon (os.path.join(_curr_dir, 'img', 'tools-active.png'))
         self.ind.set_menu(menu)
@@ -30,9 +31,10 @@ class Indicator(object):
 
     def set_attention(self, attention):
         if attention:
-            self.ind.set_status (appindicator.IndicatorStatus.ATTENTION)
+            self.ind.set_status(appindicator.IndicatorStatus.ATTENTION)
         else:
-            self.ind.set_status (appindicator.IndicatorStatus.ACTIVE)
+            self.ind.set_status(appindicator.IndicatorStatus.ACTIVE)
+
     def setState(self, state):
         if (state == 2):
             self.ind.set_icon(os.path.join(_dir_path, 'img', 'all-started.png'))
@@ -44,13 +46,11 @@ class Indicator(object):
             self.trayText.set_label('Some Services Running')
             self.startAll.set_label('Restart All')
             self.stopAll.set_sensitive(True)
-        elif (state == 0): 
+        elif (state == 0):
             self.ind.set_icon(os.path.join(_dir_path, 'img', 'all-stopped.png'))
             self.trayText.set_label('All Services Stopped')
             self.startAll.set_label('Start All')
             self.stopAll.set_sensitive(False)
-
-
 
 
 def menu():
@@ -95,13 +95,14 @@ def menu():
 
     sep = gtk.SeparatorMenuItem()
     menu.append(sep)
-    
+
     exittray = gtk.MenuItem('Exit Tray')
     exittray.connect('activate', quit)
     menu.append(exittray)
-    
+
     menu.show_all()
     return [menu, statusItem, startAll, stopAll]
+
 
 def serviceMenu(service):
     serviceMenu = gtk.Menu()
@@ -120,7 +121,8 @@ def serviceMenu(service):
 
     return serviceMenu
 
-def vhostMenu ():
+
+def vhostMenu():
     vhostMenu = gtk.Menu()
 
     command1 = gtk.MenuItem('Add VirtualHost')
@@ -140,13 +142,15 @@ def main():
 def serviceManager(service, action):
     global tray
     tray.setState(0)
-    
+
     cmd = str(_root) + "/bin/servicemanager {} {}".format(service, action)
     res = subprocess.check_output([cmd], shell=True)
     tray.setState(int(res))
 
+
 def quit(_):
     gtk.main_quit()
+
 
 if __name__ == "__main__":
     main()
