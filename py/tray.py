@@ -7,6 +7,8 @@ gi.require_version('AppIndicator3', '0.1')
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk as gtk, AppIndicator3 as appindicator
 
+import vhost_manager
+
 
 _dir_path = os.path.dirname(os.path.realpath(__file__))
 _root = Path(_dir_path).parent
@@ -122,7 +124,7 @@ def vhostMenu ():
     vhostMenu = gtk.Menu()
 
     command1 = gtk.MenuItem('Add VirtualHost')
-    command1.connect('activate', lambda _: addVhost())
+    command1.connect('activate', lambda _: vhost_manager.add())
     vhostMenu.append(command1)
 
     return vhostMenu
@@ -142,9 +144,6 @@ def serviceManager(service, action):
     cmd = str(_root) + "/bin/servicemanager {} {}".format(service, action)
     res = subprocess.check_output([cmd], shell=True)
     tray.setState(int(res))
-
-def addVhost ():
-    print('hey')
 
 def quit(_):
     gtk.main_quit()
