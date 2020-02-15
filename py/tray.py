@@ -62,11 +62,11 @@ def menu():
     menu.append(sep)
 
     startAll = gtk.MenuItem("(Re)start All Services")
-    startAll.connect('activate', lambda _: lampManager('all', 'restart'))
+    startAll.connect('activate', lambda _: serviceManager('all', 'restart'))
     menu.append(startAll)
 
     stopAll = gtk.MenuItem("Stop All Services")
-    stopAll.connect('activate', lambda _: lampManager('all', 'stop'))
+    stopAll.connect('activate', lambda _: serviceManager('all', 'stop'))
     menu.append(stopAll)
 
     sep = gtk.SeparatorMenuItem()
@@ -86,6 +86,13 @@ def menu():
 
     sep = gtk.SeparatorMenuItem()
     menu.append(sep)
+
+    vhostItem = gtk.MenuItem('Manage Virtual Hosts')
+    vhostItem.set_submenu(vhostMenu())
+    menu.append(vhostItem)
+
+    sep = gtk.SeparatorMenuItem()
+    menu.append(sep)
     
     exittray = gtk.MenuItem('Exit Tray')
     exittray.connect('activate', quit)
@@ -98,37 +105,47 @@ def serviceMenu(service):
     serviceMenu = gtk.Menu()
 
     command1 = gtk.MenuItem('Start')
-    command1.connect('activate', lambda _: lampManager(service, 'start'))
+    command1.connect('activate', lambda _: serviceManager(service, 'start'))
     serviceMenu.append(command1)
 
     command2 = gtk.MenuItem('Stop')
-    command2.connect('activate', lambda _: lampManager(service, 'stop'))
+    command2.connect('activate', lambda _: serviceManager(service, 'stop'))
     serviceMenu.append(command2)
 
     command3 = gtk.MenuItem('Restart')
-    command3.connect('activate', lambda _: lampManager(service, 'restart'))
+    command3.connect('activate', lambda _: serviceManager(service, 'restart'))
     serviceMenu.append(command3)
 
     return serviceMenu
 
+def vhostMenu ():
+    vhostMenu = gtk.Menu()
+
+    command1 = gtk.MenuItem('Add VirtualHost')
+    command1.connect('activate', lambda _: addVhost())
+    vhostMenu.append(command1)
+
+    return vhostMenu
+
+
 def main():
     global tray
     tray = Indicator(*menu())
-    lampManager('getstate', '')
+    serviceManager('getstate', '')
     gtk.main()
 
 
-def lampManager(service, action):
+def serviceManager(service, action):
     global tray
     tray.setState(0)
-    # os.system('bash ' + str(_root) + "/bin/lampmanager {} {}".format(service, action))
-    # res = os.popen(str(_root) + "/bin/lampmanager {} {}".format(service, action)).read()
-    # res = subprocess.check_output([str(_root) + "/bin/lampmanager", service, action], shell=True)
-    cmd = str(_root) + "/bin/lampmanager {} {}".format(service, action)
-    res = subprocess.check_output([cmd], shell=True)
-    print(res)
-    tray.setState(int(res))
     
+    cmd = str(_root) + "/bin/servicemanager {} {}".format(service, action)
+    res = subprocess.check_output([cmd], shell=True)
+    tray.setState(int(res))
+
+def addVhost ():
+    print('hey')
+
 def quit(_):
     gtk.main_quit()
 if __name__ == "__main__":
