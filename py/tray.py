@@ -147,5 +147,6 @@ def serviceManager(service, action):
 
 def quit(_):
     gtk.main_quit()
+
 if __name__ == "__main__":
     main()
