@@ -31,3 +31,6 @@ echo "$user ALL=(ALL) NOPASSWD: /usr/sbin/service apache2 *, /usr/sbin/service m
 echo ""
 echo "Changes were made successfully."
 
+
+# Add execution rights to bin files
+

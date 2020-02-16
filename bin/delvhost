@@ -1,33 +1,12 @@
 #!/bin/bash
-vhost=$1
-path=$2
+{
+  vhost=$1
 
-echo "
-<VirtualHost *:80>
+  a2dissite $vhost.conf
+  rm /etc/apache2/sites-available/$vhost.conf
 
-        ServerName $vhost
+  sed -i "/127.0.1.1   $vhost/d" /etc/hosts
+  service apache2 reload
 
-        ServerAdmin webmaster@localhost
-        DocumentRoot $path
-
-        <Directory $path>
-                Options Indexes FollowSymLinks
-                AllowOverride All
-                Require all granted
-        </Directory>
-
-        # Available loglevels: trace8, ..., trace1, debug, info, notice, warn,
-        # error, crit, alert, emerg.
-        # It is also possible to configure the loglevel for particular
-        # modules, e.g.
-        #LogLevel info ssl:warn
-
-        ErrorLog /var/log/error.log
-        CustomLog /var/log/access.log combined
-</VirtualHost>
-" > /etc/apache2/sites-available/$vhost.conf
-
-echo "127.0.1.1   $vhost" >> /etc/hosts
-
-a2ensite $vhost.conf
-service apache2 reload
+  notify-send "$vhost Virtual Host deleted"
+} &> /dev/null

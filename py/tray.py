@@ -3,6 +3,7 @@ import os
 import subprocess
 import gi
 from pathlib import Path
+import notify2
 
 gi.require_version('AppIndicator3', '0.1')
 gi.require_version('Gtk', '3.0')
@@ -137,6 +138,7 @@ def main():
     tray = Indicator(*menu())
     serviceManager('getstate', '')
     gtk.main()
+    notify2.init("LAMP Manager")
 
 
 def serviceManager(service, action):
