@@ -28,7 +28,7 @@ echo "
 </VirtualHost>
 " > /etc/apache2/sites-available/$vhost.conf
 
-echo "127.0.0.1   $vhost" >> /etc/hosts
+echo "127.0.1.1   $vhost" >> /etc/hosts
 
 a2ensite $vhost.conf
 service apache2 reload

@@ -22,6 +22,9 @@ class VhostForm(Gtk.Window):
         self.vBox = Gtk.Box(spacing=5, orientation=1)
         self.add(self.vBox)
 
+        self.name = ""
+        self.path = ""
+
         field_box1 = Gtk.Box(spacing=5)
         name_field_label = Gtk.Label("Virtual host name:")
         field_box1.pack_start(name_field_label, True, True, 10)
@@ -62,14 +65,15 @@ class VhostForm(Gtk.Window):
             self.errorMsg('Error', '"' + path + '" is not a directory.')
         else:
             self.name = name
+            self.path = path
 
             cmd = "pkexec " + str(_root) + "/bin/addvhost {} {}".format(name, path)
             res = subprocess.call([cmd], shell=True)
             if int(res) == 0:
                 n = notify2.Notification("Successfully created Virtual Host",
-                                         "You can now use this virtualHost locally.",
+                                         "You can now access to http://" + name + "/.",
                                          os.path.join(_dir_path, 'img', 'logo.png'))
-                n.add_action("open", "Open in browser", self.actions, None)
+                n.add_action("open", "Open in browser", self.actions)
                 n.show()
                 self.destroy()
             else:
@@ -102,7 +106,7 @@ class VhostForm(Gtk.Window):
 
     def actions(self, notification, action):
         if action == "open":
-            webbrowser.open_new_tab('http://localhost/')
+            webbrowser.open_new_tab('http://' + self.name + '/')
 
 
 def add():
