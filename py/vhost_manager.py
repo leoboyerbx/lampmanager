@@ -112,3 +112,4 @@ class VhostForm(Gtk.Window):
 def add():
     win = VhostForm()
     win.show_all()
+# TODO: create vhost list list
