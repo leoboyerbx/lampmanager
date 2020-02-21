@@ -129,6 +129,9 @@ def vhostMenu():
     command1 = gtk.MenuItem('Add VirtualHost')
     command1.connect('activate', lambda _: vhost_manager.add())
     vhostMenu.append(command1)
+    command2 = gtk.MenuItem('Manage VirtualHosts')
+    command2.connect('activate', lambda _: vhost_manager.manage())
+    vhostMenu.append(command2)
 
     return vhostMenu
 
