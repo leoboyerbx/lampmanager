@@ -8,6 +8,7 @@ from pathlib import Path
 
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
+from VhostModel import VHostModel
 
 _dir_path = os.path.dirname(os.path.realpath(__file__))
 _root = Path(_dir_path).parent
@@ -18,6 +19,10 @@ class VhostForm(Gtk.Window):
 
         notify2.init("LAMP Manager", "glib")
         Gtk.Window.__init__(self, title="Add Apache Virtual Host")
+        self.connect("destroy", self.on_destroy)
+
+        self.vhostsModel = VHostModel()
+        self.vhostsModel.all()
 
         self.vBox = Gtk.Box(spacing=5, orientation=1)
         self.add(self.vBox)
@@ -103,6 +108,9 @@ class VhostForm(Gtk.Window):
 
     def cancel(self, widget):
         self.destroy()
+
+    def on_destroy(self, widget):
+        print('exit')
 
     def actions(self, notification, action):
         if action == "open":
