@@ -109,7 +109,32 @@ class VhostForm(Gtk.Window):
             webbrowser.open_new_tab('http://' + self.name + '/')
 
 
+class VHostList(Gtk.Window):
+    def __init__(self):
+        Gtk.Window.__init__(self, title="Apache Virtual Host Management")
+
+        self.vBox = Gtk.Box(spacing=5, orientation=1)
+        self.add(self.vBox)
+
+        vhost_list_wrapper = Gtk.Box(spacing=5)
+        self.vBox.pack_start(vhost_list_wrapper, True, True, 10)
+
+        vhost_actions = Gtk.Box(spacing=5, orientation=1)
+        add_vhost_btn = Gtk.ToolButton()
+        add_vhost_btn.set_icon_name("list-add")
+        vhost_actions.pack_start(add_vhost_btn, True, True, 0)
+        del_vhost_btn = Gtk.ToolButton()
+        del_vhost_btn.set_icon_name("list-remove")
+        vhost_actions.pack_start(del_vhost_btn, True, True, 0)
+
+        vhost_list_wrapper.pack_start(vhost_actions, True, True, 10)
+
+
+
 def add():
     win = VhostForm()
     win.show_all()
-# TODO: create vhost list list
+
+def manage():
+    win = VHostList()
+    win.show_all()
