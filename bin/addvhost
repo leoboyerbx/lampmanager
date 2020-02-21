@@ -1,5 +1,5 @@
 #!/bin/bash
-{
+#{
 vhost=$1
 path=$2
 
@@ -31,6 +31,6 @@ echo "
 echo "127.0.1.1   $vhost" >> /etc/hosts
 
 a2ensite $vhost.conf
-service apache2 reload
+service apache2 restart
 
-} &> /dev/null
+#} &> /dev/null
