@@ -143,7 +143,6 @@ class VHostList(Gtk.Window):
 def add():
     win = VhostForm()
     win.show_all()
-
 def manage():
     win = VHostList()
     win.show_all()
