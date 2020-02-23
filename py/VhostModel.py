@@ -29,5 +29,8 @@ class VhostModel:
         for rest in self.cursor:
             print(res)
 
-    def closeConnection (self):
+    def get_tree_model(self):
+        print('trm')
+
+    def close_connection (self):
         self.connection.close()
