@@ -198,6 +198,10 @@ class VHostList(Gtk.Window):
         edit_vhost_btn.set_icon_name("view-more")
         edit_vhost_btn.connect("clicked", self.edit_vhost)
         vhost_actions.pack_start(edit_vhost_btn, False, False, 0)
+        open_vhost_btn = Gtk.ToolButton()
+        open_vhost_btn.set_icon_name("window-new")
+        open_vhost_btn.connect("clicked", self.open_vhost)
+        vhost_actions.pack_start(open_vhost_btn, False, False, 0)
 
         vhost_list_wrapper.pack_start(vhost_actions, False, False, 10)
 
@@ -221,6 +225,11 @@ class VHostList(Gtk.Window):
         (model, iter) = selection.get_selected()
         subwindow = VHostFormEdit(model[iter][0], model[iter][1], model[iter][2])
         subwindow.show_all()
+
+    def open_vhost(self, widget):
+        selection = self.vhost_list.get_selection()
+        (model, iter) = selection.get_selected()
+        webbrowser.open_new_tab("http://" + model[iter][1])
 
 
     def errorMsg(self, message, details):
