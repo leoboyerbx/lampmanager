@@ -15,7 +15,9 @@ _root = Path(_dir_path).parent
 
 class VhostForm(Gtk.Window):
 
-    def __init__(self):
+    def __init__(self, parent = None):
+
+        self.parent = parent
 
         notify2.init("LAMP Manager", "glib")
         Gtk.Window.__init__(self, title="Add Apache Virtual Host")
@@ -113,7 +115,8 @@ class VhostForm(Gtk.Window):
         self.destroy()
 
     def on_destroy(self, widget):
-        print('exit')
+        if not(self.parent is None):
+            self.parent.update()
 
     def actions(self, notification, action):
         if action == "open":
@@ -123,6 +126,7 @@ class VhostForm(Gtk.Window):
 class VHostList(Gtk.Window):
     def __init__(self):
         Gtk.Window.__init__(self, title="Apache Virtual Host Management")
+        self.vhostsModel = VhostModel()
 
         self.vBox = Gtk.Box(spacing=5, orientation=1)
         self.add(self.vBox)
@@ -130,15 +134,38 @@ class VHostList(Gtk.Window):
         vhost_list_wrapper = Gtk.Box(spacing=5)
         self.vBox.pack_start(vhost_list_wrapper, True, True, 10)
 
+        self.vhost_list = Gtk.TreeView(self.vhostsModel.get_list_store())
+        self.vhost_list.set_size_request(500, 200)
+        renderer = Gtk.CellRendererText()
+
+        cols = ["#", "Name", "Path"]
+        for i in range(len(cols)):
+            column = Gtk.TreeViewColumn(cols[i], renderer, text=i)
+            self.vhost_list.append_column(column)
+        vhost_list_wrapper.pack_start(self.vhost_list, True, True, 10)
+
+
         vhost_actions = Gtk.Box(spacing=5, orientation=1)
         add_vhost_btn = Gtk.ToolButton()
         add_vhost_btn.set_icon_name("list-add")
-        vhost_actions.pack_start(add_vhost_btn, True, True, 0)
+        add_vhost_btn.connect("clicked", self.add_vhost)
+        vhost_actions.pack_start(add_vhost_btn, False, False, 0)
         del_vhost_btn = Gtk.ToolButton()
         del_vhost_btn.set_icon_name("list-remove")
-        vhost_actions.pack_start(del_vhost_btn, True, True, 0)
+        add_vhost_btn.connect("clicked", self.del_vhost)
+        vhost_actions.pack_start(del_vhost_btn, False, False, 0)
 
-        vhost_list_wrapper.pack_start(vhost_actions, True, True, 10)
+        vhost_list_wrapper.pack_start(vhost_actions, False, False, 10)
+
+    def update(self):
+        self.vhost_list.set_model(self.vhostsModel.get_list_store())
+
+    def add_vhost(self, widget):
+        subwindow = VhostForm(self)
+        subwindow.show_all()
+
+    def del_vhost(self, widget):
+        self.vhostsModel.delete(2)
 
 
 
