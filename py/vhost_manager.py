@@ -235,8 +235,7 @@ class VHostList(Gtk.Window):
     def errorMsg(self, message, details):
         dialog = Gtk.MessageDialog(self, 0, Gtk.MessageType.ERROR,
                                    Gtk.ButtonsType.CANCEL, message)
-        dialog.format_secondary_text(
-            details)
+        dialog.format_secondary_text(details)
         dialog.run()
         dialog.destroy()
 
