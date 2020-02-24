@@ -28,6 +28,15 @@ class VhostModel:
         self.cursor.execute("INSERT INTO vhosts (name, path) VALUES (?, ?)", (name, path,))
         self.connection.commit()
 
+    def update(self, ident, name, path):
+        self.cursor.execute('''
+            UPDATE vhosts
+            SET name = ?,
+                path = ?
+            WHERE id = ?
+        ''', (name, path, ident,))
+        self.connection.commit()
+
     def delete(self, ident):
         name = self.get_name(ident)
         if (name):
