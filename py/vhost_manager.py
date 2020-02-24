@@ -13,11 +13,11 @@ from VhostModel import VhostModel
 _dir_path = os.path.dirname(os.path.realpath(__file__))
 _root = Path(_dir_path).parent
 
+
 class VhostForm(Gtk.Window):
 
-    def __init__(self, parent = None):
+    def __init__(self):
 
-        self.parent = parent
 
         notify2.init("LAMP Manager", "glib")
         Gtk.Window.__init__(self, title="Add Apache Virtual Host")
@@ -68,7 +68,7 @@ class VhostForm(Gtk.Window):
         path = self.pathField.get_text()
         if (name == "" or path == ""):
             self.errorMsg('Error', 'Please fill in all the fields to proceed.')
-        elif not(os.path.isdir(path)):
+        elif not (os.path.isdir(path)):
             self.errorMsg('Error', '"' + path + '" is not a directory.')
         elif self.vhostsModel.exists(name):
             self.errorMsg('Error', '"' + name + '" is already an existing virtualHost.')
@@ -115,8 +115,7 @@ class VhostForm(Gtk.Window):
         self.destroy()
 
     def on_destroy(self, widget):
-        if not(self.parent is None):
-            self.parent.update()
+        VHostList.update()
 
     def actions(self, notification, action):
         if action == "open":
@@ -124,9 +123,18 @@ class VhostForm(Gtk.Window):
 
 
 class VHostList(Gtk.Window):
+    instances = []
+
+    @classmethod
+    def update(cls):
+        for instance in cls.instances:
+            instance.updateSelf()
+
     def __init__(self):
         Gtk.Window.__init__(self, title="Apache Virtual Host Management")
         self.vhostsModel = VhostModel()
+        VHostList.instances.append(self)
+        self.connect("destroy", self.on_destroy)
 
         self.vBox = Gtk.Box(spacing=5, orientation=1)
         self.add(self.vBox)
@@ -144,7 +152,6 @@ class VHostList(Gtk.Window):
             self.vhost_list.append_column(column)
         vhost_list_wrapper.pack_start(self.vhost_list, True, True, 10)
 
-
         vhost_actions = Gtk.Box(spacing=5, orientation=1)
         add_vhost_btn = Gtk.ToolButton()
         add_vhost_btn.set_icon_name("list-add")
@@ -157,18 +164,18 @@ class VHostList(Gtk.Window):
 
         vhost_list_wrapper.pack_start(vhost_actions, False, False, 10)
 
-    def update(self):
+    def updateSelf(self):
         self.vhost_list.set_model(self.vhostsModel.get_list_store())
 
     def add_vhost(self, widget):
-        subwindow = VhostForm(self)
+        subwindow = VhostForm()
         subwindow.show_all()
 
     def del_vhost(self, widget):
-        selection =  self.vhost_list.get_selection()
+        selection = self.vhost_list.get_selection()
         (model, iter) = selection.get_selected()
         if self.vhostsModel.delete(model[iter][0]):
-            self.update()
+            VHostList.update()
         else:
             self.errorMsg('Error', "An error occured during virtualhost deletion")
 
@@ -180,13 +187,15 @@ class VHostList(Gtk.Window):
         dialog.run()
         dialog.destroy()
 
-
-
+    def on_destroy(self, widget):
+        VHostList.instances.remove()
 
 
 def add():
     win = VhostForm()
     win.show_all()
+
+
 def manage():
     win = VHostList()
     win.show_all()
