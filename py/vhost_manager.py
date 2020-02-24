@@ -68,6 +68,8 @@ class VhostForm(Gtk.Window):
             self.errorMsg('Error', 'Please fill in all the fields to proceed.')
         elif not(os.path.isdir(path)):
             self.errorMsg('Error', '"' + path + '" is not a directory.')
+        elif self.vhostsModel.exists(name):
+            self.errorMsg('Error', '"' + name + '" is already an existing virtualHost.')
         else:
             self.name = name
             self.path = path

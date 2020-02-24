@@ -19,15 +19,18 @@ class VhostModel:
         self.connection.commit()
 
     def add(self, name, path):
-        self.cursor.execute('''
-            INSERT INTO vhosts (name, path) VALUES (?, ?)
-        ''', [(name, path)])
+        self.cursor.execute("INSERT INTO vhosts (name, path) VALUES (?, ?)", (name, path,))
         self.connection.commit()
 
     def all(self):
-        res = self.cursor.execute('SELECT * from vhosts')
+        self.cursor.execute('SELECT * from vhosts')
         for rest in self.cursor:
-            print(res)
+            print(rest)
+
+    def exists(self, name):
+        self.cursor.execute('SELECT * from vhosts WHERE name = ?', (name,))
+        return bool(self.cursor.fetchone())
+
 
     def get_tree_model(self):
         print('trm')
