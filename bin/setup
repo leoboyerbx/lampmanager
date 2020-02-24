@@ -1,4 +1,5 @@
 #!/bin/bash
+path=$1
 
 if [ "$(id -u)" -ne 0 ]; then
         echo 'This script must be run with sudo'
@@ -7,7 +8,6 @@ if [ "$(id -u)" -ne 0 ]; then
 fi
 
 user=$SUDO_USER
-
 echo "========== WARNING =========="
 echo "This setup script is going to allow the current user ($user) to run some commands with root privileges without having to provide his password."
 echo "This is for development purposes only and SHOULD NOT be done in a production environnement."
@@ -28,7 +28,12 @@ done
 
 echo "$user ALL=(ALL) NOPASSWD: /usr/sbin/service apache2 *, /usr/sbin/service mysql *" >> /etc/sudoers
 
+
+echo "Installing dependencies..."
+echo "Installing notify2..."
+pip install notify2
 echo ""
+
 echo "Changes were made successfully."
 
 
