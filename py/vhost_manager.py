@@ -152,7 +152,7 @@ class VHostList(Gtk.Window):
         vhost_actions.pack_start(add_vhost_btn, False, False, 0)
         del_vhost_btn = Gtk.ToolButton()
         del_vhost_btn.set_icon_name("list-remove")
-        add_vhost_btn.connect("clicked", self.del_vhost)
+        del_vhost_btn.connect("clicked", self.del_vhost)
         vhost_actions.pack_start(del_vhost_btn, False, False, 0)
 
         vhost_list_wrapper.pack_start(vhost_actions, False, False, 10)
@@ -165,7 +165,22 @@ class VHostList(Gtk.Window):
         subwindow.show_all()
 
     def del_vhost(self, widget):
-        self.vhostsModel.delete(2)
+        selection =  self.vhost_list.get_selection()
+        (model, iter) = selection.get_selected()
+        if self.vhostsModel.delete(model[iter][0]):
+            self.update()
+        else:
+            self.errorMsg('Error', "An error occured during virtualhost deletion")
+
+    def errorMsg(self, message, details):
+        dialog = Gtk.MessageDialog(self, 0, Gtk.MessageType.ERROR,
+                                   Gtk.ButtonsType.CANCEL, message)
+        dialog.format_secondary_text(
+            details)
+        dialog.run()
+        dialog.destroy()
+
+
 
 
 

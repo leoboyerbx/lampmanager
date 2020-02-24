@@ -2,6 +2,7 @@ import sqlite3
 import os
 from pathlib import Path
 import gi
+import subprocess
 
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
@@ -28,13 +29,19 @@ class VhostModel:
         self.connection.commit()
 
     def delete(self, ident):
-        self.get_name(ident)
-        print('hey')
-        #self.connection.commit()
+        name = self.get_name(ident)
+        if (name):
+            cmd = "pkexec " + str(_root) + "/bin/delvhost {}".format(name)
+            res = subprocess.call([cmd], shell=True)
+            if int(res) == 0:
+                self.cursor.execute('DELETE FROM vhosts WHERE id = ?', (ident,))
+                self.connection.commit()
+                return True
+        return False
 
     def get_name(self, ident):
         self.cursor.execute('SELECT name FROM vhosts WHERE id = ?', (ident,))
-        print(self.cursor.fetchone())
+        return self.cursor.fetchone()[0]
 
     def all(self):
         self.cursor.execute('SELECT * from vhosts')
