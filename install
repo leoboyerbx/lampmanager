@@ -1,2 +1,2 @@
 #!/bin/bash
-python3 ./py/setup.py $(eval echo ~$user)
+python3 ./py/guiSetup.py $(eval echo ~$user)
