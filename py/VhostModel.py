@@ -13,7 +13,7 @@ _root = Path(_dir_path).parent
 
 
 class VhostModel:
-    def __init__(self):
+    def __init__(self)
         self.connection = sqlite3.connect(os.path.join(_root, 'data', 'vhosts.db'))
         self.cursor = self.connection.cursor()
         self.cursor.execute('''CREATE TABLE IF NOT EXISTS vhosts(
