@@ -13,6 +13,7 @@ import vhost_manager
 
 _dir_path = os.path.dirname(os.path.realpath(__file__))
 _root = Path(_dir_path).parent
+print(_root)
 
 
 class Indicator(object):
@@ -76,13 +77,14 @@ def menu():
     menu.append(sep)
 
     apacheitem1 = gtk.ImageMenuItem.new_with_label('Apache2')
-    apacheitem1.set_image(gtk.Image.new_from_file(os.path.join(_root, '/img/apache.png')))
+    print(os.path.join(_root, '/img/apache.png'))
+    apacheitem1.set_image(gtk.Image.new_from_file(os.path.join(_root, 'img/apache.png')))
     apacheitem1.set_submenu(serviceMenu('apache2'))
     apacheitem1.set_always_show_image(True)
     menu.append(apacheitem1)
 
     mysqlItem = gtk.ImageMenuItem.new_with_label('MySQL')
-    mysqlItem.set_image(gtk.Image.new_from_file(os.path.join(_root, '/img/mysql.png')))
+    mysqlItem.set_image(gtk.Image.new_from_file(os.path.join(_root, 'img/mysql.png')))
     mysqlItem.set_submenu(serviceMenu('mysql'))
     mysqlItem.set_always_show_image(True)
     menu.append(mysqlItem)

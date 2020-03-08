@@ -1,5 +1,5 @@
 #!/bin/bash
 
 user=$SUDO_USER
-
-sed -i "$user ALL=(ALL) NOPASSWD: /usr/sbin/service apache2 *, /usr/sbin/service mysql *" /etc/sudoers
+#sed -i "$user ALL=(ALL) NOPASSWD: /usr/sbin/service apache2 *, /usr/sbin/service mysql *" /etc/sudoers
+sudo sed -i "\|^$user ALL=(ALL) NOPASSWD: /usr/sbin/service apache2 *|d" /etc/sudoers
