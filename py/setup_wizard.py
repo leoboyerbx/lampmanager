@@ -25,11 +25,14 @@ class InstallWizard(Gtk.Assistant):
         self.connect("close", self.done)
         text_intro = Gtk.Label(
             """Welcome to the LAMP Manager assistant !
-This wizard will help you to install LAMP Stack compoments on your computer: Apache, PHP, Mysql, PHPMyadmin, Adminer...""")
+This wizard will help you to install/remove LAMP Stack compoments on your computer: Apache, PHP, Mysql, PHPMyadmin, Adminer...""")
 
         self.append_page(text_intro)
         self.set_page_type(text_intro, Gtk.AssistantPageType.INTRO)
         self.set_page_title(text_intro, "Introduction")
+        self.set_page_complete(text_intro, True)
+
+        self.page2()
 
     def page2(self):
         page2 = Gtk.Box(spacing=5, orientation=1)
@@ -45,10 +48,14 @@ This wizard will help you to install LAMP Stack compoments on your computer: Apa
         for i in range(len(cols)):
             column = Gtk.TreeViewColumn(cols[i], renderer, text=i)
             services_list.append_column(column)
+        selection = services_list.get_selection()
+        selection.set_mode(Gtk.SelectionMode.MULTIPLE)
+
         page2.pack_start(services_list, True, True, 10)
 
         self.append_page(page2)
         self.set_page_type(page2, Gtk.AssistantPageType.CONTENT)
+        self.set_page_title(page2, "Install Services")
 
     def done(self, widget):
         Gtk.main_quit()
