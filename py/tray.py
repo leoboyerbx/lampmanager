@@ -13,7 +13,6 @@ import vhost_manager
 
 _dir_path = os.path.dirname(os.path.realpath(__file__))
 _root = Path(_dir_path).parent
-print(_root)
 
 
 class Indicator(object):
@@ -24,7 +23,7 @@ class Indicator(object):
             "",
             appindicator.IndicatorCategory.APPLICATION_STATUS)
         self.ind.set_status(appindicator.IndicatorStatus.ACTIVE)
-        self.ind.set_icon(os.path.join(_dir_path, 'img', 'all-stopped.png'))
+        self.ind.set_icon(os.path.join(_root, 'img', 'all-stopped.png'))
         # self.ind.set_attention_icon (os.path.join(_curr_dir, 'img', 'tools-active.png'))
         self.ind.set_menu(menu)
         self.trayText = trayText
@@ -39,17 +38,17 @@ class Indicator(object):
 
     def setState(self, state):
         if (state == 2):
-            self.ind.set_icon(os.path.join(_dir_path, 'img', 'all-started.png'))
+            self.ind.set_icon(os.path.join(_root, 'img', 'all-started.png'))
             self.trayText.set_label('All services Running')
             self.startAll.set_label('Restart All')
             self.stopAll.set_sensitive(True)
         elif (state == 1):
-            self.ind.set_icon(os.path.join(_dir_path, 'img', 'one-started.png'))
+            self.ind.set_icon(os.path.join(_root, 'img', 'one-started.png'))
             self.trayText.set_label('Some Services Running')
             self.startAll.set_label('Restart All')
             self.stopAll.set_sensitive(True)
         elif (state == 0):
-            self.ind.set_icon(os.path.join(_dir_path, 'img', 'all-stopped.png'))
+            self.ind.set_icon(os.path.join(_root, 'img', 'all-stopped.png'))
             self.trayText.set_label('All Services Stopped')
             self.startAll.set_label('Start All')
             self.stopAll.set_sensitive(False)
@@ -77,15 +76,14 @@ def menu():
     menu.append(sep)
 
     apacheitem1 = gtk.ImageMenuItem.new_with_label('Apache2')
-    print(os.path.join(_root, '/img/apache.png'))
     apacheitem1.set_image(gtk.Image.new_from_file(os.path.join(_root, 'img/apache.png')))
-    apacheitem1.set_submenu(serviceMenu('apache2'))
+    apacheitem1.set_submenu(serviceMenu('Apache2'))
     apacheitem1.set_always_show_image(True)
     menu.append(apacheitem1)
 
     mysqlItem = gtk.ImageMenuItem.new_with_label('MySQL')
     mysqlItem.set_image(gtk.Image.new_from_file(os.path.join(_root, 'img/mysql.png')))
-    mysqlItem.set_submenu(serviceMenu('mysql'))
+    mysqlItem.set_submenu(serviceMenu('MySQL'))
     mysqlItem.set_always_show_image(True)
     menu.append(mysqlItem)
 
@@ -110,17 +108,25 @@ def menu():
 def serviceMenu(service):
     serviceMenu = gtk.Menu()
 
-    command1 = gtk.MenuItem('Start')
-    command1.connect('activate', lambda _: serviceManager(service, 'start'))
-    serviceMenu.append(command1)
+    service_name = service
+    service = service.lower()
 
-    command2 = gtk.MenuItem('Stop')
-    command2.connect('activate', lambda _: serviceManager(service, 'stop'))
-    serviceMenu.append(command2)
+    if is_installed(service):
+        command1 = gtk.MenuItem('Start')
+        command1.connect('activate', lambda _: serviceManager(service, 'start'))
+        serviceMenu.append(command1)
 
-    command3 = gtk.MenuItem('Restart')
-    command3.connect('activate', lambda _: serviceManager(service, 'restart'))
-    serviceMenu.append(command3)
+        command2 = gtk.MenuItem('Stop')
+        command2.connect('activate', lambda _: serviceManager(service, 'stop'))
+        serviceMenu.append(command2)
+
+        command3 = gtk.MenuItem('Restart')
+        command3.connect('activate', lambda _: serviceManager(service, 'restart'))
+        serviceMenu.append(command3)
+    else:
+        info = gtk.MenuItem('{} is not installed'.format(service_name))
+        info.set_sensitive(False)
+        serviceMenu.append(info)
 
     return serviceMenu
 
@@ -137,6 +143,10 @@ def vhostMenu():
 
     return vhostMenu
 
+def is_installed (service):
+    res = subprocess.call(['which {}'.format(service)], shell=True)
+    print(not(bool(res)))
+    return not(bool(res))
 
 def main():
     global tray
