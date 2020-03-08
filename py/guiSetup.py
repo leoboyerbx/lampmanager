@@ -20,7 +20,7 @@ class InstallWizard(Gtk.Assistant):
     def __init__(self):
         Gtk.Assistant.__init__(self)
         page1 = Gtk.Box(spacing=5, orientation=1)
-        text_intro = Gtk.Label("Welcome to the LAMPManager setup. This program is going to install")
+        text_intro = Gtk.Label("Welcome to the LAMPManager setup. This program is going to preinst")
 
         self.append_page(text_intro)
 

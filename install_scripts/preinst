@@ -1,11 +1,4 @@
 #!/bin/bash
-path=$1
-
-if [ "$(id -u)" -ne 0 ]; then
-        echo 'This script must be run with sudo'
-        sudo "$0" "$@"
-        exit $?
-fi
 
 user=$SUDO_USER
 echo "========== WARNING =========="
@@ -27,10 +20,3 @@ while true; do
 done
 
 echo "$user ALL=(ALL) NOPASSWD: /usr/sbin/service apache2 *, /usr/sbin/service mysql *" >> /etc/sudoers
-
-
-echo "Changes were made successfully."
-
-
-# Add execution rights to bin files
-

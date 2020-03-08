@@ -9,8 +9,8 @@ setup(name="lampmanager",  # Name of the program.
       license='GPLv3',  # The license of the program.
       scripts=['lampmanager-gui'],
 
-      # Here you can choose where do you want to install your files on the local system, the "myprogram" file will be automatically installed in its correct place later, so you have only to choose where do you want to install the optional files that you shape with the Python script
+      # Here you can choose where do you want to preinst your files on the local system, the "myprogram" file will be automatically installed in its correct place later, so you have only to choose where do you want to preinst the optional files that you shape with the Python script
       data_files=[("lib/myprogram", ["ui.glade"]),
-                  # This is going to install the "ui.glade" file under the /usr/lib/myprogram path.
+                  # This is going to preinst the "ui.glade" file under the /usr/lib/myprogram path.
                   ("share/applications", [
-                      "myprogram.desktop"])])  # And this is going to install the .desktop file under the /usr/share/applications folder, all the folder are automatically installed under the /usr folder in your root partition, you don't need to add "/usr/ to the path.
+                      "myprogram.desktop"])])  # And this is going to preinst the .desktop file under the /usr/share/applications folder, all the folder are automatically installed under the /usr folder in your root partition, you don't need to add "/usr/ to the path.
