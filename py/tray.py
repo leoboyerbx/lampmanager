@@ -6,11 +6,10 @@ from pathlib import Path
 import notify2
 
 gi.require_version('AppIndicator3', '0.1')
-gi.require_version('Gtk', '3.24')
+gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk as gtk, AppIndicator3 as appindicator
 
 import vhost_manager
-import setup_wizard
 
 _dir_path = os.path.dirname(os.path.realpath(__file__))
 _root = Path(_dir_path).parent

@@ -3,18 +3,22 @@ import os
 from pathlib import Path
 import gi
 import subprocess
+from parse_apache_configs import parse_config
 
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
 _dir_path = os.path.dirname(os.path.realpath(__file__))
 _root = Path(_dir_path).parent
+_home = Path.home()
 
+data_dir_path = os.path.join(_home, '.lampmanager', 'data')
 
+Path(data_dir_path).mkdir(parents=True, exist_ok=True)
 
 class VhostModel:
-    def __init__(self)
-        self.connection = sqlite3.connect(os.path.join(_root, 'data', 'vhosts.db'))
+    def __init__(self):
+        self.connection = sqlite3.connect(os.path.join(data_dir_path, 'vhosts.db'))
         self.cursor = self.connection.cursor()
         self.cursor.execute('''CREATE TABLE IF NOT EXISTS vhosts(
             id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
@@ -23,6 +27,15 @@ class VhostModel:
         )''')
         self.connection.commit()
         self.list_store = None
+        self.get_from_conf()
+
+    def get_from_conf (self):
+        apache_parse_obj = parse_config.ParseApacheConfig(apache_config_path="/etc/apache2/sites-available/adopt-systems.conf")
+        apache_config = apache_parse_obj.parse_config()
+        for config in apache_config:
+            if type(config).__name__ == 'NestedTags':
+                for directive in config:
+                    print(vars(directive))
 
     def add(self, name, path):
         self.cursor.execute("INSERT INTO vhosts (name, path) VALUES (?, ?)", (name, path,))
@@ -66,7 +79,6 @@ class VhostModel:
             store.append(list(row))
         self.list_store = store
         return self.list_store
-
 
     def close_connection (self):
         self.connection.close()

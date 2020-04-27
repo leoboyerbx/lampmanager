@@ -6,7 +6,7 @@ import webbrowser
 import subprocess
 from pathlib import Path
 
-gi.require_version('Gtk', '3.24')
+gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 from VhostModel import VhostModel
 
