@@ -1,9 +1,10 @@
 import sqlite3
 import os
+import json
+import a2conf
 from pathlib import Path
 import gi
 import subprocess
-from parse_apache_configs import parse_config
 
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
@@ -23,19 +24,23 @@ class VhostModel:
         self.cursor.execute('''CREATE TABLE IF NOT EXISTS vhosts(
             id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
             name TEXT,
-            path TEXT
+            path TEXT,
+            file TEXT
         )''')
         self.connection.commit()
         self.list_store = None
         self.get_from_conf()
 
     def get_from_conf (self):
-        apache_parse_obj = parse_config.ParseApacheConfig(apache_config_path="/etc/apache2/sites-available/adopt-systems.conf")
-        apache_config = apache_parse_obj.parse_config()
-        for config in apache_config:
-            if type(config).__name__ == 'NestedTags':
-                for directive in config:
-                    print(vars(directive))
+        file = a2conf.Node("/etc/apache2/sites-available/adopt-systems.conf")
+        for vhost in file.children('<VirtualHost>'):
+            try:
+                serverName = next(vhost.children('servername')).args # Other query method, via children()
+                print(serverName)
+            except StopIteration:
+                # No SSL Engine directive in this vhost
+                continue
+
 
     def add(self, name, path):
         self.cursor.execute("INSERT INTO vhosts (name, path) VALUES (?, ?)", (name, path,))
