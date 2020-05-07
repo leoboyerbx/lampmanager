@@ -1,7 +1,5 @@
 import sqlite3
 import os
-import json
-import a2conf
 from pathlib import Path
 import gi
 import subprocess
@@ -19,7 +17,7 @@ Path(data_dir_path).mkdir(parents=True, exist_ok=True)
 
 class VhostModel:
     def __init__(self):
-        self.connection = sqlite3.connect(os.path.join(data_dir_path, 'vhosts.db'))
+        self.connection = sqlite3.connect(os.path.join(data_dir_path, 'lampmanager.db'))
         self.cursor = self.connection.cursor()
         self.cursor.execute('''CREATE TABLE IF NOT EXISTS vhosts(
             id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
@@ -31,16 +29,15 @@ class VhostModel:
         self.list_store = None
         self.get_from_conf()
 
-    def get_from_conf (self):
-        file = a2conf.Node("/etc/apache2/sites-available/adopt-systems.conf")
-        for vhost in file.children('<VirtualHost>'):
-            try:
-                serverName = next(vhost.children('servername')).args # Other query method, via children()
-                print(serverName)
-            except StopIteration:
-                # No SSL Engine directive in this vhost
-                continue
-
+    # def get_from_conf (self):
+    #     file = a2conf.Node("/etc/apache2/sites-available/adopt-systems.conf")
+    #     for vhost in file.children('<VirtualHost>'):
+    #         try:
+    #             serverName = next(vhost.children('servername')).args # Other query method, via children()
+    #             print(serverName)
+    #         except StopIteration:
+    #             # No SSL Engine directive in this vhost
+    #             continue
 
     def add(self, name, path):
         self.cursor.execute("INSERT INTO vhosts (name, path) VALUES (?, ?)", (name, path,))
